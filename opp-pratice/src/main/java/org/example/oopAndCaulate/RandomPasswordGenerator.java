@@ -1,11 +1,11 @@
-package org.example;
+package org.example.oopAndCaulate;
 
 import org.passay.CharacterData;
 import org.passay.CharacterRule;
 import org.passay.EnglishCharacterData;
 import org.passay.PasswordGenerator;
 
-public class RandomPasswordGenerator implements org.example.PasswordGenerator {
+public class RandomPasswordGenerator implements org.example.oopAndCaulate.PasswordGenerator {
     /**
      * Special characters allowed in password.
      * 테스트 하기 쉬운 코드를 작성하다 보면 더 낮은 결합도를 가진 설계를 얻을 수 있다.

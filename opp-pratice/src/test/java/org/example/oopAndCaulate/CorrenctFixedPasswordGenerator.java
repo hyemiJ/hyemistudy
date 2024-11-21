@@ -1,4 +1,4 @@
-package org.example;
+package org.example.oopAndCaulate;
 
 public class CorrenctFixedPasswordGenerator implements PasswordGenerator {
 

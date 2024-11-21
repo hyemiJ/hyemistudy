@@ -1,18 +1,18 @@
-package org.example.calculate;
+package org.example.oopAndCaulate.calculate;
 
-public class MuliplicationOprator implements NewAritmeticOperator{
+public class SubTractionOperator implements NewAritmeticOperator{
+
     @Override
     public boolean supports(String operater) {
-        return "*".equals(operater);
+        return "-".equals(operater);
     }
 
     @Override
     public int caculate(int a, int b) {
-        return a*b;
+        return a-b;
     }
-
     @Override
     public int caculatePosive(PositiveNumber a, PositiveNumber b) {
-        return a.getNumber()*b.getNumber();
+        return a.getNumber()-b.getNumber();
     }
 }

@@ -1,4 +1,4 @@
-package org.example;
+package org.example.oopAndCaulate;
 
 // 비밀번호는 최소 8자리 이상 12자리 이하
 //- 이외의 경우 IllegalArgumentException 예외 발생
@@ -18,7 +18,7 @@ public class PasswordValidatorTest {
     @DisplayName("비밀번호는 최소 8자리 이상 12자리 이하면 예외가 발생하지 않는다.")
     @Test
     void validatePassword() {
-        assertThatCode(()->PasswordValidator.validate("serverwizad"))
+        assertThatCode(()-> PasswordValidator.validate("serverwizad"))
                 .doesNotThrowAnyException();
         //assertThatCode는 assertj에 있는 메서드로 , 테스트 코드의 가독성이 높아질 수있다.
         //doesNotThrowAnyException : 코드 실행 중 어떠한 예외도 발생하지 않아야 테스트가 성공.

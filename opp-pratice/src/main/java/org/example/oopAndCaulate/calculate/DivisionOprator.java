@@ -1,4 +1,4 @@
-package org.example.calculate;
+package org.example.oopAndCaulate.calculate;
 
 public class DivisionOprator implements NewAritmeticOperator{
 
