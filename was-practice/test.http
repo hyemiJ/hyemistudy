@@ -1,0 +1,2 @@
+# /calculate?a=11&operator=*&b=33
+GET http://localhost:8080/calculate?a=10&operator=+&b=55

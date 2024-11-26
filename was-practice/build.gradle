@@ -1,0 +1,30 @@
+plugins {
+    id 'java'
+}
+
+group = 'org.example'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    //default : junit
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+
+    // junit-params : 경계선 테스트 코드를 위한 주입 https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-params
+    //testImplementation 'org.junit.jupiter:junit-jupiter-params:5.10.2'
+
+    //assertj : 테스트 코드 추가 라이브러리 https://mvnrepository.com/artifact/org.assertj/assertj-core
+    testImplementation 'org.assertj:assertj-core:3.24.2'
+
+    //logback-classic : https://mvnrepository.com/artifact/ch.qos.logback/logback-classic
+    implementation 'ch.qos.logback:logback-classic:1.2.3'
+
+}
+
+test {
+    useJUnitPlatform()
+}
