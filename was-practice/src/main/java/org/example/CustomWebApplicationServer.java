@@ -8,11 +8,15 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class CustomWebApplicationServer {
 
     private final int port;
     private static final Logger log = LoggerFactory.getLogger(CustomWebApplicationServer.class);
+    private final ExecutorService executor = Executors.newFixedThreadPool(10); //다양한 api가 있지만 , newFixedThreadPool로 활용.
+    //해당 부분을 "꼭 이렇게 사용해야해"가 아닌 , ThreadPool을 활용하는 부분을 볼 것.
 
     public CustomWebApplicationServer(int port) {
         this.port = port;
@@ -67,7 +71,9 @@ public class CustomWebApplicationServer {
 //                    }
 //                }
                 //2. 요청마다 개별 thread 생성
-                new Thread(new ClientRequestHandler(clientSocket)).start();
+                //new Thread(new ClientRequestHandler(clientSocket)).start();
+                //3. ThreadPool 적용
+                executor.execute(new ClientRequestHandler(clientSocket));
             }
         }
     }
