@@ -17,7 +17,7 @@ public class WebApplicationServer {
     //WAR 파일 배포 시 문제가 없도록 하기 위함.
     public static void main(String[] args) throws Exception {
         // 웹 애플리케이션 디렉토리 경로 설정 (webapps/ 디렉토리를 기준으로 사용)
-        String webappDirLocation = "webapps/";
+        String webappDirLocation = "webapp/";
 
         // Tomcat 서버 객체 생성
         Tomcat tomcat = new Tomcat();
