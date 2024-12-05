@@ -4,23 +4,23 @@ import java.sql.*;
 
 public class UserDAO {
 
-    private Connection getConnection() {
-        String url = "jdbc:h2:mem://localhost/~/jdbc-practice;MODE=MySQL;DB_CLOSE_DELAY=-1";
-        String id = "sa";
-        String password = "";
-        try {
-            Class.forName("org.h2.Driver");
-            return DriverManager.getConnection(url,id,password);
-        } catch (Exception e) {
-            return null;
-        }
-    }
+//    private Connection getConnection() {
+//        String url = "jdbc:h2:mem://localhost/~/jdbc-practice;MODE=MySQL;DB_CLOSE_DELAY=-1";
+//        String id = "sa";
+//        String password = "";
+//        try {
+//            Class.forName("org.h2.Driver");
+//            return DriverManager.getConnection(url,id,password);
+//        } catch (Exception e) {
+//            return null;
+//        }
+//    }//ConnectionManager로 이식 (리팩터링)
 
     public void create(User user) throws SQLException {
         Connection con = null;
         PreparedStatement ps = null;
         try {
-            con = getConnection();
+            con = ConnectionManager.getConnection();
             String sql = "INSERT INTO users VALUES (?,?,?,?)";
             ps = con.prepareStatement(sql);
             ps.setString(1,user.getUserId());
@@ -41,7 +41,7 @@ public class UserDAO {
         ResultSet rs = null;
         User user = null;
         try {
-            con = getConnection();
+            con = ConnectionManager.getConnection();
             String sql = "SELECT * FROM users WHERE userId = ?";
             ps = con.prepareStatement(sql);
             ps.setString(1,userId);
