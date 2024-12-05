@@ -25,7 +25,7 @@ public class UserDAOTest {
     @Test
     void createTest() throws SQLException {
         UserDAO userDAO = new UserDAO();// dao 클래스 생성
-        userDAO.create(new User("user1","password","name","email"));
+        userDAO.create2(new User("user1","password","name","email"));
 
         //DAO란 Data Access Object의 약자로 ,
         // DB 작업을 수행할때 userDAO에게 해당 작업을 위임한다.

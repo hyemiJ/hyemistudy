@@ -33,7 +33,29 @@ public class UserDAO {
             if(ps != null) ps.close();
             if(con != null) con.close();
         }
-    }
+    }//리팩터링 이전
+
+    public void create2(User user) throws SQLException {
+        JdbcTemplate jdbcTemplate = new JdbcTemplate();
+        String sql = "INSERT INTO users VALUES (?,?,?,?)";
+//        jdbcTemplate.executeUpdate(user, sql, new PreparedStatementSetter() {
+//            @Override
+//            public void setter(PreparedStatement ps) throws SQLException {
+//                ps.setString(1,user.getUserId());
+//                ps.setString(2,user.getPassword());
+//                ps.setString(3,user.getName());
+//                ps.setString(4,user.getEmail());
+//            }
+//
+//        });//람다식으로 바꾸기전 , 내부 클래스
+
+        jdbcTemplate.executeUpdate(user, sql, ps -> {
+            ps.setString(1,user.getUserId());
+            ps.setString(2,user.getPassword());
+            ps.setString(3,user.getName());
+            ps.setString(4,user.getEmail());
+        });// 람다식으로 변경
+    }//리팩터링 이후
 
     public User findByUserId(String userId) throws SQLException {
         Connection con = null;
