@@ -83,9 +83,9 @@ public class reflectionTest {
         //3.
         Class<?> userClass3 = Class.forName("org.example.model.User");
 
-        log.debug("user.class : {}", userClass);
-        log.debug("user2.class : {}", userClass2);
-        log.debug("user3.class : {}", userClass3);
+        log.debug("user.class : {}", userClass); //user.class : class org.example.model.User
+        log.debug("user2.class : {}", userClass2);//user2.class : class org.example.model.User
+        log.debug("user3.class : {}", userClass3);//user3.class : class org.example.model.User
 
         assertThat(userClass ==userClass2).isTrue();
         assertThat(userClass2 ==userClass3).isTrue();
