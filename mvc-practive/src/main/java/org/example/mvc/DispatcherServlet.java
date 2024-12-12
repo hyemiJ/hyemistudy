@@ -1,6 +1,8 @@
 package org.example.mvc;
 
 import org.example.mvc.controller.Controller;
+import org.example.mvc.controller.HandlerKey;
+import org.example.mvc.controller.RequestMethod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,7 +41,12 @@ public class DispatcherServlet extends HttpServlet {
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         log.info("Dispatching request...");
-        Controller handler = requestMappingHandlerMapping.findController(request.getRequestURI());
+        //v1 . String 으로 url을 넘기는 방법
+        //다양한 http Method를 사용할 수 없음으로 HandlerKey 사용 -> v2
+        //Controller handler = requestMappingHandlerMapping.findController(request.getRequestURI());
+
+        //v2.HandlerKey 사용
+        Controller handler = requestMappingHandlerMapping.findController(new HandlerKey(RequestMethod.valueOf(request.getMethod()),request.getRequestURI()));
         //요청 uri에 대한 작업을 service로 위임.
         try {
             String viewname = handler.handleRequest(request,response);
