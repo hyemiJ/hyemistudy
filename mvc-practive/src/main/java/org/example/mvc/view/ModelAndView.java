@@ -16,4 +16,9 @@ public class ModelAndView {
     public Map<String,?> getModel() {
     return Collections.unmodifiableMap(model);//불변값으로 리턴
     }
+
+
+    public String getViewName() {
+        return (this.view instanceof String) ? (String) this.view : null;
+    }
 }

@@ -63,12 +63,13 @@ public class DispatcherServlet extends HttpServlet {
         //다양한 http Method를 사용할 수 없음으로 HandlerKey 사용 -> v2
         //Controller handler = requestMappingHandlerMapping.findController(request.getRequestURI());
 
-        //v2.HandlerKey 사용
-        Controller handler = requestMappingHandlerMapping.findController(new HandlerKey(RequestMethod.valueOf(request.getMethod()),request.getRequestURI()));
+
         //요청 uri에 대한 작업을 service로 위임.
         try {
-            String viewname = handler.handleRequest(request,response);
-            log.info("viewname = {}", viewname);
+            //v2.HandlerKey 사용
+            Controller handler = requestMappingHandlerMapping.findController(new HandlerKey(RequestMethod.valueOf(request.getMethod()),request.getRequestURI()));
+            //String viewname = handler.handleRequest(request,response);
+            //log.info("viewname = {}", viewname);
 
             //v4.HandlerAdapter활용
             HandlerAdapter adapter =handlerAdapters.stream()
@@ -82,7 +83,7 @@ public class DispatcherServlet extends HttpServlet {
 
             //v3 .viewResolver 를 통한 뷰를 받아오기.
            for (ViewResolver viewResolver : viewResolvers) {
-               View view = viewResolver.resolveView(viewname);
+               View view = viewResolver.resolveView(modelAndView.getViewName());
                view.render(modelAndView.getModel(), request, response);
            }
 
