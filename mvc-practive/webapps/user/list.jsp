@@ -23,7 +23,7 @@
         <tr>
             <th scope="row">${status.count}</th>
             <td>${user.userId}</td>
-            <td>${user.name}</td>
+            <td>${user.userName}</td>
             </td>
         </tr>
     </c:forEach>

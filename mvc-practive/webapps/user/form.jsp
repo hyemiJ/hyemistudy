@@ -14,8 +14,8 @@
         <input class="form-control" id="userId" name="userId" placeholder="User ID">
     </div>
     <div>
-        <label for="name">이름</label>
-        <input class="form-control" id="name" name="name" placeholder="Name">
+        <label for="userName">이름</label>
+        <input class="form-control" id="userName" name="userName" placeholder="user Name">
     </div>
     <button type="submit">회원가입</button>
 </form>
