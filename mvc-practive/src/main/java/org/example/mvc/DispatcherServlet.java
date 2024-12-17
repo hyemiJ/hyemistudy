@@ -1,5 +1,6 @@
 package org.example.mvc;
 
+import org.example.mvc.adapter.AnnotationHandlerAdapter;
 import org.example.mvc.adapter.SimpleControllerHandlerAdapter;
 import org.example.mvc.controller.Controller;
 import org.example.mvc.adapter.HandlerAdapter;
@@ -27,8 +28,12 @@ import java.util.List;
 public class DispatcherServlet extends HttpServlet {
     private static final Logger log = LoggerFactory.getLogger(DispatcherServlet.class);
 
-    private RequestMappingHandlerMapping requestMappingHandlerMapping;
-
+    //v5. RequestMappingHandlerMapping -> HandlerMapping을 상속받아 타입을 변경
+    //private RequestMappingHandlerMapping requestMappingHandlerMapping;
+    //v6. AnnotationHandlerMapping추가 후 리스트 타입으로 변경
+    //리스트로 받는 이유 ? :AnnotationHandlerMapping 과 RequestMappingHandlerMapping을 가질것이기 때문에.
+    //private HandlerMapping handlerMapping;
+    private List<HandlerMapping> handlerMappings;
     //v3. viewResolver 사용
     private List<ViewResolver> viewResolvers;
 
@@ -48,12 +53,17 @@ public class DispatcherServlet extends HttpServlet {
     @Override
     public void init() throws ServletException {
        //초기화
-        requestMappingHandlerMapping = new RequestMappingHandlerMapping();
+        //상위 인터페이스로 변경해서 선언하였음으로 , 새로이 선언하고 대입시키도록 변경
+//        requestMappingHandlerMapping = new RequestMappingHandlerMapping();
+//        requestMappingHandlerMapping.init();
+        RequestMappingHandlerMapping requestMappingHandlerMapping = new RequestMappingHandlerMapping();//새로이 선언
         requestMappingHandlerMapping.init();
+        AnnotationHandlerMapping annotationHandlerMapping = new AnnotationHandlerMapping("org.examle");
+        handlerMappings = List.of(requestMappingHandlerMapping,annotationHandlerMapping);//대입
 
         viewResolvers = Collections.singletonList(new JspViewResolver());//viewResolvers 초기화
 
-        handlerAdapters = List.of(new SimpleControllerHandlerAdapter());
+        handlerAdapters = List.of(new SimpleControllerHandlerAdapter(), new AnnotationHandlerAdapter());
     }
 
     @Override
@@ -65,9 +75,18 @@ public class DispatcherServlet extends HttpServlet {
 
 
         //요청 uri에 대한 작업을 service로 위임.
+
+        String requestUri = request.getRequestURI();
+        RequestMethod requestMethod = RequestMethod.valueOf(request.getMethod());
+
         try {
-            //v2.HandlerKey 사용
-            Controller handler = requestMappingHandlerMapping.findController(new HandlerKey(RequestMethod.valueOf(request.getMethod()),request.getRequestURI()));
+            //v2.HandlerKey 사용  v5.requestMappingHandlerMapping.findController -> handlerMapping.findController
+            //Controller handler = requestMappingHandlerMapping.findController(new HandlerKey(RequestMethod.valueOf(request.getMethod()),request.getRequestURI()));
+            Object handler = handlerMappings.stream()
+                    .filter(hm -> hm.findController(new HandlerKey(requestMethod,requestUri))!=null)
+                    .map(hm -> hm.findController(new HandlerKey(requestMethod,requestUri)))
+                    .findFirst()
+                    .orElseThrow(()->new ServletException("no handler ! method :"+requestMethod+", uri:"+requestUri));
             //String viewname = handler.handleRequest(request,response);
             //log.info("viewname = {}", viewname);
 

@@ -5,7 +5,7 @@ import org.example.mvc.controller.*;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RequestMappingHandlerMapping {
+public class RequestMappingHandlerMapping implements HandlerMapping {
     private Map<HandlerKey , Controller> mappings = new HashMap<>();
     //key : url path / value : 해당 controller
     //만약 "/user" -> userController 를 호출해달라 라는 의미
@@ -19,7 +19,7 @@ public class RequestMappingHandlerMapping {
         //mappings.put("/users", new UserListController());
 
         //v2. Http method 를 사용하기 위해 HandlerKey를 사용
-        mappings.put(new HandlerKey(RequestMethod.GET , "/"),new HomeController());
+        //mappings.put(new HandlerKey(RequestMethod.GET , "/"),new HomeController());
         mappings.put(new HandlerKey(RequestMethod.GET , "/users"),new UserListController());
         mappings.put(new HandlerKey(RequestMethod.POST , "/users"),new UserCreateController());
         mappings.put(new HandlerKey(RequestMethod.GET,"/user/form"), new ForwardController("/user/form"));
