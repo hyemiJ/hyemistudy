@@ -1,0 +1,307 @@
+{
+  "metadata": {
+    "kernelspec": {
+      "name": "python",
+      "display_name": "Python (Pyodide)",
+      "language": "python"
+    },
+    "language_info": {
+      "codemirror_mode": {
+        "name": "python",
+        "version": 3
+      },
+      "file_extension": ".py",
+      "mimetype": "text/x-python",
+      "name": "python",
+      "nbconvert_exporter": "python",
+      "pygments_lexer": "ipython3",
+      "version": "3.8"
+    }
+  },
+  "nbformat_minor": 5,
+  "nbformat": 4,
+  "cells": [
+    {
+      "id": "2c45ad4d-bf8a-4500-a4ae-7217d4aa015e",
+      "cell_type": "markdown",
+      "source": "#### <span style=\"color:skyblue\">Context Manager</span>\n- 특정 작업에서 시작과 끝을 관리해주는 객체\n- 일반적으로 <span style=\"color:hotpink\">with</span>문과 함께 사용된다.\n- 리소스 관리, 로깅, 트랜젝션관리, 파일 입출력, 데이터베이스 연결 등 자동으로 <span style=\"color:skyblue\">clean up</span>작업을 수행한다.\n- 까먹으면 실수해서 해제하지 않는 리소스들이 생길 수 있지만 <span style=\"color:skyblue\">close()</span>를 자동으로 호출하여 처리한다.\n- 두가지의 메서드를 가진다.\n  - <span style=\"color:hotpink\">enter()</span>: with문 시작시 호출(자원의 획득 및 연결 열기 등)\n  - <span style=\"color:hotpink\">exit()</span> : with문 종료시 호출(블록이 끝나거나 예외발생시. 인자 4개 필요: 자원 정리 및 연결닫기, 예외처리)\n- as 변수 : enter()값의 리턴이 변수에 할당된다. (보통은 self를 반환)\n- with 클래스(인자) : 클래스의 인자값은 init() 생성자의 인자로 들어간다.",
+      "metadata": {}
+    },
+    {
+      "id": "75f0259e-bbab-410e-ad78-7e0dc8226b82",
+      "cell_type": "code",
+      "source": "class MyResorce:\n    def __init__(self,name):\n        self.name = name\n        print('init')\n\n    def __enter__(self):\n        print(f\" enter => name : {self.name}\")\n        return self\n\n    def __exit__(self, exc_type, exc_val, exc_tb):\n        #exc_type : 예외 유형 (예외가 없으면 None)\n        #exc_vale : 예외 값 (예외가 없으면 None)\n        #exc_tb :예외의 트레이스백 객체(예외가 없으면 None)\n        print(\"exit\")",
+      "metadata": {
+        "trusted": true
+      },
+      "outputs": [],
+      "execution_count": 5
+    },
+    {
+      "id": "680925aa-c014-4b84-9c6a-5011ca87ee21",
+      "cell_type": "code",
+      "source": "with MyResorce('이름'):\n    print(\"running\")",
+      "metadata": {
+        "trusted": true
+      },
+      "outputs": [
+        {
+          "name": "stdout",
+          "output_type": "stream",
+          "text": "init\n enter => name : 이름\nrunning\nexit\n"
+        }
+      ],
+      "execution_count": 6
+    },
+    {
+      "id": "a60717be-b73e-4ff7-8e24-33855476e33a",
+      "cell_type": "code",
+      "source": "with MyResorce('이름2') as r:\n    print('running')\n    print(r.name)",
+      "metadata": {
+        "trusted": true
+      },
+      "outputs": [
+        {
+          "name": "stdout",
+          "output_type": "stream",
+          "text": "init\n enter => name : 이름2\nrunning\n이름2\nexit\n"
+        }
+      ],
+      "execution_count": 7
+    },
+    {
+      "id": "dc8b864d-abf1-4121-b9cb-f738dafbbb0e",
+      "cell_type": "code",
+      "source": "# 이해를 위한 예시\nwith SomeContext() as var:\n    작업들\n    \n#내부동작 이해하기\ncontext = SomeContext()           # → __init__ 호출\nvar = context.__enter__()        # → 여기서 인자 없음\ntry:\n    작업들\nfinally:\n    context.__exit__(exc_type, exc_val, exc_tb)",
+      "metadata": {
+        "trusted": true
+      },
+      "outputs": [],
+      "execution_count": null
+    },
+    {
+      "id": "b1520ab5-756a-493b-a3cc-6044d75a4b3e",
+      "cell_type": "code",
+      "source": "with open('with_test.txt','w') as text_file:\n    text_file.write('hello')\n    text_file.write('with test')",
+      "metadata": {
+        "trusted": true
+      },
+      "outputs": [],
+      "execution_count": 8
+    },
+    {
+      "id": "3cb47dfa-551a-4b70-9fb9-7bde2e22dd95",
+      "cell_type": "code",
+      "source": "with open('with_test.txt') as text_file:\n    content = text_file.read()\n    print(content)",
+      "metadata": {
+        "trusted": true
+      },
+      "outputs": [
+        {
+          "name": "stdout",
+          "output_type": "stream",
+          "text": "hellowith test\n"
+        }
+      ],
+      "execution_count": 9
+    },
+    {
+      "id": "0b96bd14-de95-4678-beda-8a0367743c03",
+      "cell_type": "code",
+      "source": "with open('with_test.txt','a') as text_file:\n    text_file.write('add')",
+      "metadata": {
+        "trusted": true
+      },
+      "outputs": [],
+      "execution_count": 14
+    },
+    {
+      "id": "d6a28ef2-2324-4f3a-a2dc-fbad13a2effe",
+      "cell_type": "code",
+      "source": "with open('with_test.txt') as text_file:\n    for line in text_file:\n        print(line)",
+      "metadata": {
+        "trusted": true
+      },
+      "outputs": [
+        {
+          "name": "stdout",
+          "output_type": "stream",
+          "text": "hellowith testadd\n"
+        }
+      ],
+      "execution_count": 15
+    },
+    {
+      "id": "7f8c42e9-bce2-4ae8-8077-bde16f6990da",
+      "cell_type": "markdown",
+      "source": "#### <span style=\"color:skyblue\">contextlib를 이용한 Context Manager 생성</span>\n- contextlib 모듈의 contextmanager를 이용하면 클래스를 만들지 않고, <span style=\"color:hotpink\">함수</span>로 context manager를 만들 수 있다.\n- import contextlib from contxtmanager 를 하고 <span style=\"color:hotpink\">@contextmanager</span>를 한다.\n- <span style=\"color:hotpink\">yield</span>의 앞 뒤로 enter() 과 exit()의 실행을 나눈다.",
+      "metadata": {}
+    },
+    {
+      "id": "9b4f9b7f-2718-4c8e-923c-a206eeaedb43",
+      "cell_type": "code",
+      "source": "from contextlib import contextmanager\n\n@contextmanager\ndef my_context():\n    # __enter__ 역할\n    print(\"자원 열기\")\n    yield\n    # __exit__ 역할\n    print(\"자원 닫기\")\n\nwith my_context():\n    print(\"작업 중\")",
+      "metadata": {
+        "trusted": true
+      },
+      "outputs": [
+        {
+          "name": "stdout",
+          "output_type": "stream",
+          "text": "자원 열기\n작업 중\n자원 닫기\n"
+        }
+      ],
+      "execution_count": 16
+    },
+    {
+      "id": "72985efd-d054-40e9-8b3f-67a00b31bf40",
+      "cell_type": "code",
+      "source": "# close()를 통해 자원을 닫고 as 를 통해 변수로 받음.\n@contextmanager\ndef open_file(path, mode):\n    f = open(path, mode)\n    try:\n        yield f  # 이 값이 with ... as 변수 에 들어감\n    finally:\n        f.close()\n\nwith open_file(\"hello.txt\", \"w\") as f:\n    f.write(\"contextlib로 파일 쓰기!\")",
+      "metadata": {
+        "trusted": true
+      },
+      "outputs": [],
+      "execution_count": null
+    },
+    {
+      "id": "47e0e1fe-2d22-40b0-8835-149355119da2",
+      "cell_type": "markdown",
+      "source": "##### 위의 동작 방식\n1. open_file(\"hello.txt\", \"w\") 호출 → 제너레이터 객체 반환\n2. __enter__()가 호출 → yield f 실행 → f가 as 변수로 넘어감\n3. with 블록 종료 → finally: 실행 → f.close()",
+      "metadata": {}
+    },
+    {
+      "id": "2ce75e02-b0c2-420b-b8e5-640a8d734767",
+      "cell_type": "code",
+      "source": "#예외처리 넣은 구문\n@contextmanager\ndef demo():\n    print(\"enter\")\n    try:\n        yield\n    except Exception as e:\n        print(\"예외 발생:\", e)\n    finally:\n        print(\"exit\")\n\nwith demo():\n    print(\"작업 중\")\n    raise ValueError(\"문제 발생!\")  # 예외 테스트",
+      "metadata": {
+        "trusted": true
+      },
+      "outputs": [
+        {
+          "name": "stdout",
+          "output_type": "stream",
+          "text": "enter\n작업 중\n예외 발생: 문제 발생!\nexit\n"
+        }
+      ],
+      "execution_count": 17
+    },
+    {
+      "id": "6ac2f6f3-a3b9-40df-86c6-9021021e7331",
+      "cell_type": "markdown",
+      "source": "##### contextlib 모듈의 closing()\n- closing()은 with 문과 함께 사용되고, enter(),exit()를 가지지 않은 객체를 close()를 가지고 있다면 자동으로 close 해준다.\n- close()를 가지지 않는 객체일 경우에는 사용할 수 없다.\n- 대표적으로 urlopen()은 파일처럼 read() 와 close() 를 가지고 있지만 enter()와 exit() 은 가지고 있지 않다.",
+      "metadata": {}
+    },
+    {
+      "id": "add9d1c8-2a6b-4b8a-a952-b3b1332c9263",
+      "cell_type": "code",
+      "source": "from contextlib import closing\nfrom urllib.request import urlopen\n\nwith closing(urlopen(\"https://www.example.com\")) as page:\n    for line in page:\n        print(line) # 현재는 실행 에러.",
+      "metadata": {
+        "trusted": true
+      },
+      "outputs": [],
+      "execution_count": null
+    },
+    {
+      "id": "8c146935-522f-4c97-b28b-966edbbca1ce",
+      "cell_type": "markdown",
+      "source": "##### contextlib 모듈의 suppress()\n- 특정 예외를 무시하고 싶을 때 사용한다.\n- 실제로는 exit() 메서드에서 True를 반환한 것과 같다.\n- 인자로 예외 클래스 타입을 지정한다. (예외 인스턴스 생성 X)",
+      "metadata": {}
+    },
+    {
+      "id": "7e734c26-fff1-4ac0-9e8c-039fe06d905f",
+      "cell_type": "code",
+      "source": "from contextlib import suppress\n\nwith suppress(FileNotFoundError):\n    with open(\"없는파일.txt\") as f:\n        print(f.read())\n\nprint(\"계속 실행됨\")",
+      "metadata": {
+        "trusted": true
+      },
+      "outputs": [
+        {
+          "name": "stdout",
+          "output_type": "stream",
+          "text": "계속 실행됨\n"
+        }
+      ],
+      "execution_count": 19
+    },
+    {
+      "id": "41bf6496-dd99-47f5-8410-9f7839113e88",
+      "cell_type": "code",
+      "source": "with suppress(ValueError, ZeroDivisionError):\n    x = int(\"문자열\")  # ValueError 발생 → 무시됨\n    y = 1 / 0          # ZeroDivisionError 발생 → 무시됨",
+      "metadata": {
+        "trusted": true
+      },
+      "outputs": [],
+      "execution_count": 20
+    },
+    {
+      "id": "6b3e3493-aa66-4752-b6f6-b370e9f25b9e",
+      "cell_type": "code",
+      "source": "with suppress(FileNotFoundError(\"메시지\")):\n    with open('없는파일.txt') as f:\n        print(f.read())\nprint(\"FileNotFoundError의 인스턴스 생성\")# except처럼 클래스타입을 비교하기 때문에 인스턴스를 생성하면 안됨.",
+      "metadata": {
+        "trusted": true
+      },
+      "outputs": [
+        {
+          "ename": "<class 'TypeError'>",
+          "evalue": "issubclass() arg 2 must be a class, a tuple of classes, or a union",
+          "traceback": [
+            "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+            "\u001b[0;31mFileNotFoundError\u001b[0m                         Traceback (most recent call last)",
+            "Cell \u001b[0;32mIn[21], line 2\u001b[0m\n\u001b[1;32m      1\u001b[0m \u001b[38;5;28;01mwith\u001b[39;00m suppress(\u001b[38;5;167;01mFileNotFoundError\u001b[39;00m(\u001b[38;5;124m\"\u001b[39m\u001b[38;5;124m메시지\u001b[39m\u001b[38;5;124m\"\u001b[39m)):\n\u001b[0;32m----> 2\u001b[0m     \u001b[38;5;28;01mwith\u001b[39;00m \u001b[38;5;28;43mopen\u001b[39;49m\u001b[43m(\u001b[49m\u001b[38;5;124;43m'\u001b[39;49m\u001b[38;5;124;43m없는파일.txt\u001b[39;49m\u001b[38;5;124;43m'\u001b[39;49m\u001b[43m)\u001b[49m \u001b[38;5;28;01mas\u001b[39;00m f:\n\u001b[1;32m      3\u001b[0m         \u001b[38;5;28mprint\u001b[39m(f\u001b[38;5;241m.\u001b[39mread())\n",
+            "File \u001b[0;32m/lib/python3.12/site-packages/IPython/core/interactiveshell.py:324\u001b[0m, in \u001b[0;36m_modified_open\u001b[0;34m(file, *args, **kwargs)\u001b[0m\n\u001b[1;32m    318\u001b[0m     \u001b[38;5;28;01mraise\u001b[39;00m \u001b[38;5;167;01mValueError\u001b[39;00m(\n\u001b[1;32m    319\u001b[0m         \u001b[38;5;124mf\u001b[39m\u001b[38;5;124m\"\u001b[39m\u001b[38;5;124mIPython won\u001b[39m\u001b[38;5;124m'\u001b[39m\u001b[38;5;124mt let you open fd=\u001b[39m\u001b[38;5;132;01m{\u001b[39;00mfile\u001b[38;5;132;01m}\u001b[39;00m\u001b[38;5;124m by default \u001b[39m\u001b[38;5;124m\"\u001b[39m\n\u001b[1;32m    320\u001b[0m         \u001b[38;5;124m\"\u001b[39m\u001b[38;5;124mas it is likely to crash IPython. If you know what you are doing, \u001b[39m\u001b[38;5;124m\"\u001b[39m\n\u001b[1;32m    321\u001b[0m         \u001b[38;5;124m\"\u001b[39m\u001b[38;5;124myou can use builtins\u001b[39m\u001b[38;5;124m'\u001b[39m\u001b[38;5;124m open.\u001b[39m\u001b[38;5;124m\"\u001b[39m\n\u001b[1;32m    322\u001b[0m     )\n\u001b[0;32m--> 324\u001b[0m \u001b[38;5;28;01mreturn\u001b[39;00m \u001b[43mio_open\u001b[49m\u001b[43m(\u001b[49m\u001b[43mfile\u001b[49m\u001b[43m,\u001b[49m\u001b[43m \u001b[49m\u001b[38;5;241;43m*\u001b[39;49m\u001b[43margs\u001b[49m\u001b[43m,\u001b[49m\u001b[43m \u001b[49m\u001b[38;5;241;43m*\u001b[39;49m\u001b[38;5;241;43m*\u001b[39;49m\u001b[43mkwargs\u001b[49m\u001b[43m)\u001b[49m\n",
+            "\u001b[0;31mFileNotFoundError\u001b[0m: [Errno 44] No such file or directory: '없는파일.txt'",
+            "\nDuring handling of the above exception, another exception occurred:\n",
+            "\u001b[0;31mTypeError\u001b[0m                                 Traceback (most recent call last)",
+            "Cell \u001b[0;32mIn[21], line 1\u001b[0m\n\u001b[0;32m----> 1\u001b[0m \u001b[38;5;28;01mwith\u001b[39;00m suppress(\u001b[38;5;167;01mFileNotFoundError\u001b[39;00m(\u001b[38;5;124m\"\u001b[39m\u001b[38;5;124m메시지\u001b[39m\u001b[38;5;124m\"\u001b[39m)):\n\u001b[1;32m      2\u001b[0m     \u001b[38;5;28;01mwith\u001b[39;00m \u001b[38;5;28mopen\u001b[39m(\u001b[38;5;124m'\u001b[39m\u001b[38;5;124m없는파일.txt\u001b[39m\u001b[38;5;124m'\u001b[39m) \u001b[38;5;28;01mas\u001b[39;00m f:\n\u001b[1;32m      3\u001b[0m         \u001b[38;5;28mprint\u001b[39m(f\u001b[38;5;241m.\u001b[39mread())\n",
+            "File \u001b[0;32m/lib/python312.zip/contextlib.py:458\u001b[0m, in \u001b[0;36msuppress.__exit__\u001b[0;34m(self, exctype, excinst, exctb)\u001b[0m\n\u001b[1;32m    456\u001b[0m \u001b[38;5;28;01mif\u001b[39;00m exctype \u001b[38;5;129;01mis\u001b[39;00m \u001b[38;5;28;01mNone\u001b[39;00m:\n\u001b[1;32m    457\u001b[0m     \u001b[38;5;28;01mreturn\u001b[39;00m\n\u001b[0;32m--> 458\u001b[0m \u001b[38;5;28;01mif\u001b[39;00m \u001b[38;5;28;43missubclass\u001b[39;49m\u001b[43m(\u001b[49m\u001b[43mexctype\u001b[49m\u001b[43m,\u001b[49m\u001b[43m \u001b[49m\u001b[38;5;28;43mself\u001b[39;49m\u001b[38;5;241;43m.\u001b[39;49m\u001b[43m_exceptions\u001b[49m\u001b[43m)\u001b[49m:\n\u001b[1;32m    459\u001b[0m     \u001b[38;5;28;01mreturn\u001b[39;00m \u001b[38;5;28;01mTrue\u001b[39;00m\n\u001b[1;32m    460\u001b[0m \u001b[38;5;28;01mif\u001b[39;00m \u001b[38;5;28missubclass\u001b[39m(exctype, BaseExceptionGroup):\n",
+            "\u001b[0;31mTypeError\u001b[0m: issubclass() arg 2 must be a class, a tuple of classes, or a union"
+          ],
+          "output_type": "error"
+        }
+      ],
+      "execution_count": 21
+    },
+    {
+      "id": "c987607e-1ab4-446a-b4bc-63cd1aebcab0",
+      "cell_type": "markdown",
+      "source": "##### contextlib 모듈의 redirect_stdout()\n- 표준 출력(stand out)을 일시적으로 다른 파일 객체로 리다이렉션할 수 있도록 도와준다.",
+      "metadata": {}
+    },
+    {
+      "id": "647e9b8a-3eb7-4739-b6d3-01a6aa8fdee5",
+      "cell_type": "code",
+      "source": "from contextlib import redirect_stdout\n\nwith open(\"output.txt\", \"w\") as f:\n    with redirect_stdout(f):\n        print(\"이건 결과에 안 나오고 output.txt로 들어감!\")",
+      "metadata": {
+        "trusted": true
+      },
+      "outputs": [],
+      "execution_count": 22
+    },
+    {
+      "id": "2ae96ac5-7bd7-4245-a3ce-8f6f38db75c2",
+      "cell_type": "markdown",
+      "source": "##### contextmanger는 여러개를 한번에 사용할 수 있다.",
+      "metadata": {}
+    },
+    {
+      "id": "dd21c147-0072-4e17-a286-f9b5867e3548",
+      "cell_type": "code",
+      "source": "with open('output.txt') as input_f, open('multi_output.txt','w') as output_f:\n    input_file = input_f.read()\n    output_f.write(input_file.upper())",
+      "metadata": {
+        "trusted": true
+      },
+      "outputs": [],
+      "execution_count": 24
+    },
+    {
+      "id": "1f45b19e-319b-4962-a92a-f7eb0d127101",
+      "cell_type": "code",
+      "source": "",
+      "metadata": {
+        "trusted": true
+      },
+      "outputs": [],
+      "execution_count": null
+    }
+  ]
+}
